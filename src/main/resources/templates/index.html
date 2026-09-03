@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gerador de Senhas</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c;
+            text-align: center;
+        }
+        /* MENU LATERAL */
+        .menu {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 220px;
+            height: 100vh;
+            background-color: #1c1c1c;
+            padding-top: 30px;
+            border-right: 1px solid #333;
+        }
+        .menu h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .menu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+            font-size: 16px;
+        }
+        .menu a:hover {
+            background-color: #333;
+        }
+        .menu a.ativo {
+            color: black;
+            background-color: #feffff;
+        }
+        /* CONTEÚDO */
+        .conteudo {
+            color: white;
+            margin-left: 220px;
+            padding: 40px;
+            max-width: 900px;
+            text-align: center;
+        }
+        .senha-destaque {
+            background-color: #3a3a3a;
+            font-size: 4rem;
+            font-weight: bold;
+            color: #ff0000;
+            margin: 10px 0;
+        }
+        .box {
+            background-color: #2e2e2e;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .botoes-senha {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn {
+            padding: 12px 24px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            color: white;
+        }
+        .btn-comun {
+            background-color: #28a745;
+        }
+        .btn-idoso {
+            background-color: #ffc107;
+            color: black;
+        }
+        .btn-vip {
+            background-color: #dc3545;
+            color: black;
+        }
+        .btn-limpar {
+            gap: 5px;
+            background-color: #6c757d;
+        }
+        .btn-historico {
+            background-color: #3551dc;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background-color: #3a3a3a;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- MENU LATERAL -->
+<div class="menu">
+    <h2>Painel</h2>
+    <a href="/" class="ativo"> 🔑 Gerador de Senha </a>
+    <a href="/display"> 📺 Display </a>
+</div>
+
+<!-- CONTEÚDO -->
+<div class="conteudo">
+    <div class="box">
+        <h1>Gerador de Senhas</h1>
+        <h2>Última Senha</h2>
+        
+        <div class="senha-destaque" th:text="${ultimaSenha == null ? '--' : ultimaSenha}"> --
+        </div>
+
+        <div class="botoes-senha">
+
+            <!-- SENHA COMUN -->
+            <form th:action="@{/gerarSenha}" method="post">
+                <input type="hidden" name="tipo" value="comum">
+                    <button type="submit" class="btn btn-comun"> Senha Comun </button>
+            </form>
+
+            <!-- SENHA IDOSO -->
+            <form th:action="@{/gerarSenha}" method="post">
+                <input type="hidden" name="tipo" value="Idoso">
+                    <button type="submit" class="btn btn-idoso"> Senha Idoso </button>
+            </form>
+            
+            <!-- SENHA VIP -->
+            <form th:action="@{/gerarSenha}" method="post">
+                <input type="hidden" name="tipo" value="Vip">
+                    <button type="submit" class="btn btn-vip"> Senha Vip </button>
+            </form>
+
+            <!-- RESETAR -->
+            <form th:action="@{/limpar}" method="post">
+                <button type="submit" class="btn btn-limpar"> Resetar Senha </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- HISTÓRICO -->
+    <div class="box">
+        <h3>Histórico de Senhas Geradas</h3>
+        <p th:if="${#lists.isEmpty(historico)}"> Nenhuma senha no histórico. </p>
+        <ul th:if="${!#lists.isEmpty(historico)}">
+            <li th:each="senha : ${historico}"> Senha: 
+                <strong th:text="${senha}"></strong>
+            </li>
+        </ul>
+
+        <!-- LIMPAR HISTÓRICO -->
+        <form th:action="@{/limparHistorico}" method="post" style="margin-top: 15px;" th:if="${!#lists.isEmpty(historico)}">
+            <button type="submit" class="btn btn-historico"> Limpar Histórico </button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
